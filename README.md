@@ -8,10 +8,10 @@ W pliku **mockedApi.ts** znajduje się fejkowe źródło danych i tam nie ma pot
 
 ## Co należy zrobić?
 
-1. Refactor funkcji categoryTree. Wszystkie chwyty dozwolone. Dzielenie funkcji, wynoszenie zależności, zmiana parametrów wejściowych, etc...
-2. Źródło danych (funkcja getCategories) powinna być przekazywana jako zależność. W idealnym scenariuszu categoryTree opiera się na abstrakcji i nie jest świadoma co konretnie zostanie jej przekazane
-3. Poprawiony zostanie bug opisany poniżej.
-4. W osobnym pliku przeprowadzony zostanie dowód (w postaci kodu) który jednoznacznie pokaże poprawność działania funkcji categoryTree.
+- [x] Refactor funkcji categoryTree. Wszystkie chwyty dozwolone. Dzielenie funkcji, wynoszenie zależności, zmiana parametrów wejściowych, etc...
+- [ ] Źródło danych (funkcja getCategories) powinna być przekazywana jako zależność. W idealnym scenariuszu categoryTree opiera się na abstrakcji i nie jest świadoma co konretnie zostanie jej przekazane
+- [x] Poprawiony zostanie bug opisany poniżej.
+- [x] W osobnym pliku przeprowadzony zostanie dowód (w postaci kodu) który jednoznacznie pokaże poprawność działania funkcji categoryTree.
 
 > Wszystkie potrzebne paczki są już w tym repozytorium, aczkolwiek można użyć dowolnych.
 
