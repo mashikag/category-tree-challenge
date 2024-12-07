@@ -1,13 +1,14 @@
 import test from 'ava';
 
-import { CategoryTreeBuilder } from '..';
+import { CategoryTreeNode } from '../../types/category';
+import { CategoryOTreeBuilder } from '../categoryTreeBuilder';
+
 import { CORRECT } from './__fixtures__/correctResult';
-import { Category } from '../types/category';
 import { getCategories } from './__fixtures__/mockedApi';
 
 // Test successful category tree transformation
 test('Transforms categories correctly', async (t) => {
-  const result = await CategoryTreeBuilder.fromQuery(getCategories);
+  const result = await CategoryOTreeBuilder.fromQuery(getCategories);
 
   t.assert(result.length > 0);
   t.deepEqual(result, CORRECT);
@@ -15,7 +16,7 @@ test('Transforms categories correctly', async (t) => {
 
 // Test direct tree building without query
 test('Builds tree directly from categories', (t) => {
-  const categories: Category[] = [
+  const categories: CategoryTreeNode[] = [
     {
       id: 1,
       name: 'Category 1',
@@ -37,7 +38,7 @@ test('Builds tree directly from categories', (t) => {
     }
   ];
 
-  const builder = new CategoryTreeBuilder();
+  const builder = new CategoryOTreeBuilder();
   const result = builder.buildTree(categories);
 
   t.is(result.length, 1);
@@ -48,7 +49,7 @@ test('Builds tree directly from categories', (t) => {
 
 // Test home category selection with explicit flags
 test('Sets home categories based on # in title, when there is more than 5 input categories.', (t) => {
-  const categories: Category[] = [
+  const categories: CategoryTreeNode[] = [
     { id: 1, name: 'Cat 1', Title: '1', hasChildren: false, MetaTagDescription: 'desc1', url: '/1', children: [] },
     { id: 2, name: 'Cat 2', Title: '2#', hasChildren: false, MetaTagDescription: 'desc2', url: '/2', children: [] },
     { id: 3, name: 'Cat 3', Title: '3#', hasChildren: false, MetaTagDescription: 'desc3', url: '/3', children: [] },
@@ -57,7 +58,7 @@ test('Sets home categories based on # in title, when there is more than 5 input 
     { id: 6, name: 'Cat 6', Title: '6#', hasChildren: false, MetaTagDescription: 'desc6', url: '/6', children: [] }
   ];
 
-  const builder = new CategoryTreeBuilder();
+  const builder = new CategoryOTreeBuilder();
   const result = builder.buildTree(categories);
 
   t.false(result[0].showOnHome);
@@ -70,7 +71,7 @@ test('Sets home categories based on # in title, when there is more than 5 input 
 
 // Test default home category selection
 test('Shows first 3 categories on home when no explicit flags', (t) => {
-  const categories: Category[] = Array.from({ length: 6 }, (_, i) => ({
+  const categories: CategoryTreeNode[] = Array.from({ length: 6 }, (_, i) => ({
     id: i + 1,
     name: `Cat ${i + 1}`,
     Title: String(i + 1),
@@ -80,7 +81,7 @@ test('Shows first 3 categories on home when no explicit flags', (t) => {
     children: []
   }));
 
-  const builder = new CategoryTreeBuilder();
+  const builder = new CategoryOTreeBuilder();
   const result = builder.buildTree(categories);
 
   t.true(result[0].showOnHome);
@@ -94,7 +95,7 @@ test('Shows first 3 categories on home when no explicit flags', (t) => {
 test('Shows all categories on home when input size is 5 or less, regardless of explicit flags', (t) => {
   // Test for each possible length from 1 to 5
   for (let length = 1; length <= 5; length++) {
-    const categories: Category[] = Array.from({ length }, (_, i) => ({
+    const categories: CategoryTreeNode[] = Array.from({ length }, (_, i) => ({
       id: i + 1,
       name: `Cat ${i + 1}`,
       Title: String(i + 1) + (i === 0 || i === length - 1 ? '#' : ''), // Set # for first and last
@@ -104,7 +105,7 @@ test('Shows all categories on home when input size is 5 or less, regardless of e
       children: []
     }));
 
-    const builder = new CategoryTreeBuilder();
+    const builder = new CategoryOTreeBuilder();
     const result = builder.buildTree(categories);
 
     // Verify length
@@ -119,13 +120,13 @@ test('Shows all categories on home when input size is 5 or less, regardless of e
 
 // Test ordering logic
 test('Orders categories based on title numbers', (t) => {
-  const categories: Category[] = [
+  const categories: CategoryTreeNode[] = [
     { id: 1, name: 'Cat A', Title: '3', hasChildren: false, MetaTagDescription: 'descA', url: '/a', children: [] },
     { id: 2, name: 'Cat B', Title: '1', hasChildren: false, MetaTagDescription: 'descB', url: '/b', children: [] },
     { id: 3, name: 'Cat C', Title: '2', hasChildren: false, MetaTagDescription: 'descC', url: '/c', children: [] }
   ];
 
-  const builder = new CategoryTreeBuilder();
+  const builder = new CategoryOTreeBuilder();
   const result = builder.buildTree(categories);
 
   t.is(result[0].name, 'Cat B');
@@ -139,7 +140,7 @@ test('Handles API errors gracefully', async (t) => {
     throw new Error('API Error');
   };
 
-  const result = await CategoryTreeBuilder.fromQuery(getCategories);
+  const result = await CategoryOTreeBuilder.fromQuery(getCategories);
   t.deepEqual(result, []);
 });
 
@@ -147,12 +148,12 @@ test('Handles API errors gracefully', async (t) => {
 test('Handles empty data correctly', async (t) => {
   const getCategories = async () => ({ data: [] });
 
-  const result = await CategoryTreeBuilder.fromQuery(getCategories);
+  const result = await CategoryOTreeBuilder.fromQuery(getCategories);
   t.deepEqual(result, []);
 });
 
 test('buildTree returns empty array when given empty input', (t) => {
-  const builder = new CategoryTreeBuilder();
+  const builder = new CategoryOTreeBuilder();
   const result = builder.buildTree([]);
   t.deepEqual(result, [], 'Should return empty array when given empty input');
 });
@@ -162,6 +163,6 @@ test('Handles non-Error objects in catch block', async (t) => {
     throw 'String error'; // This will trigger the 'Unknown error' branch
   };
 
-  const result = await CategoryTreeBuilder.fromQuery(getCategories);
+  const result = await CategoryOTreeBuilder.fromQuery(getCategories);
   t.deepEqual(result, []);
 });

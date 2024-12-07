@@ -1,18 +1,15 @@
-export interface Category {
-  id: number;
+import { OrderedTreeNode, TreeNode } from '../core/baseTreeBuilder';
+
+export type CategoryTreeNode = TreeNode<{
   name: string;
-  hasChildren: boolean;
   Title: string;
   MetaTagDescription: string;
   url: string;
-  children: Category[];
-}
+  hasChildren: boolean;
+}>;
 
-export interface CategoryTreeNode {
-  id: number;
+export type CategoryOTreeNode = OrderedTreeNode<{
   name: string;
   image: string;
-  order: number;
-  children: CategoryTreeNode[];
   showOnHome: boolean;
-}
+}>;
