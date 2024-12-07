@@ -1,13 +1,4 @@
-import { Category } from './mockedApi';
-
-export interface CategoryTreeNode {
-  id: number;
-  name: string;
-  image: string;
-  order: number;
-  children: CategoryTreeNode[];
-  showOnHome: boolean;
-}
+import { Category, CategoryTreeNode } from '../types/category';
 
 export type CategoriesQuery = () => Promise<{ data: Category[] }>;
 
@@ -16,17 +7,8 @@ export class CategoryTreeBuilder {
   private readonly DEFAULT_HOME_CATEGORIES = 3;
 
   /**
-   * Builds an ordered category tree from a query that returns an array of categories.
-   * The query should return an array of categories with the following structure:
-   * 
-   * {
-   *   id: number;
-   *   name: string;
-   *   image: string;
-   *   order: number;
-   *   children: CategoryTreeNode[];
-   *   showOnHome: boolean;
-   * }
+   * Builds an ordered category tree based on a query result that returns an array of categories.
+   * The query should return an array of categories.
    */
   static async fromQuery(categoriesQuery: CategoriesQuery): Promise<CategoryTreeNode[]> {
     try {
@@ -36,7 +18,7 @@ export class CategoryTreeBuilder {
       const builder = new CategoryTreeBuilder();
       return builder.buildTree(categories);
     } catch (error) {
-      console.error('Error while fetching categories:', error);
+      console.error('Error while fetching categories:', error instanceof Error ? error.message : 'Unknown error');
       return [];
     }
   }
@@ -88,8 +70,9 @@ export class CategoryTreeBuilder {
     }
 
     // Show default number of categories if no explicit ones marked
-    tree.slice(0, this.DEFAULT_HOME_CATEGORIES)
-        .forEach(category => (category.showOnHome = true));
+    for (let i = 0; i < this.DEFAULT_HOME_CATEGORIES; i++) {
+      tree[i].showOnHome = true;
+    }
   }
 
   buildTree(categories: Category[]): CategoryTreeNode[] {
@@ -104,4 +87,3 @@ export class CategoryTreeBuilder {
     return tree;
   }
 }
-

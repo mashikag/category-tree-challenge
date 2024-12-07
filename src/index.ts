@@ -1,1 +1,1 @@
-export * from './categoryTreeBuilder';
+export * from './core/categoryTreeBuilder';
