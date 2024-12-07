@@ -2,22 +2,30 @@
 export type TreeNode<T = Record<string, unknown>> = {
   id: number;
   children?: TreeNode<T>[];
-} & T
+} & T;
 
 // Base type for any tree node output
 export type OrderedTreeNode<T = Record<string, unknown>> = {
   id: number;
   order: number;
   children: OrderedTreeNode<T>[];
-} & T
+} & T;
 
 // Configuration for ordered tree building
-export interface OrderedTreeBuilderConfig<TData = Record<string, unknown>, R extends OrderedTreeNode<Record<string, unknown>> = OrderedTreeNode<Record<string, unknown>>> {
+export interface OrderedTreeBuilderConfig<
+  TData = Record<string, unknown>,
+  R extends OrderedTreeNode<Record<string, unknown>> = OrderedTreeNode<
+    Record<string, unknown>
+  >
+> {
   getOrder: (input: TreeNode<TData>) => number;
   transform: (input: TreeNode<TData>, order: number, children: R[]) => R;
 }
 
-export class OrderedTreeBuilder<TData extends TreeNode = TreeNode, R extends OrderedTreeNode = OrderedTreeNode> {
+export class OrderedTreeBuilder<
+  TData extends TreeNode = TreeNode,
+  R extends OrderedTreeNode = OrderedTreeNode
+> {
   protected readonly config: OrderedTreeBuilderConfig<TData, R>;
 
   constructor(config?: Partial<OrderedTreeBuilderConfig<TData, R>>) {
@@ -27,7 +35,7 @@ export class OrderedTreeBuilder<TData extends TreeNode = TreeNode, R extends Ord
         const result = {
           ...input,
           order,
-          children: children || [],
+          children,
         };
         return result as R;
       },

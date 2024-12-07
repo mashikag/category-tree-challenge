@@ -3,7 +3,7 @@ import test from 'ava';
 import {
   OrderedTreeBuilder,
   OrderedTreeNode,
-  TreeNode
+  TreeNode,
 } from '../baseTreeBuilder';
 
 // Test implementation types
@@ -11,7 +11,7 @@ type TestNode = TreeNode<{
   name: string;
 }>;
 
-type TestOrderedNode =  OrderedTreeNode<{
+type TestOrderedNode = OrderedTreeNode<{
   name: string;
 }>;
 
@@ -192,9 +192,15 @@ test('OrderedTreeBuilder should handle undefined children', (t) => {
 
 test('OrderedTreeBuilder should use default transform when no transform is provided', (t) => {
   const builder = new OrderedTreeBuilder();
-  const input: TreeNode = { 
+  const input: TreeNode = {
     id: 1,
-    extraField: 'test value'
+    extraField: 'test value',
+    children: [
+      {
+        id: 2,
+        extraField: 'test value',
+      },
+    ],
   };
 
   const result = builder.buildTree([input]);
@@ -204,7 +210,14 @@ test('OrderedTreeBuilder should use default transform when no transform is provi
       id: 1,
       extraField: 'test value',
       order: 1,
-      children: [],
+      children: [
+        {
+          id: 2,
+          extraField: 'test value',
+          order: 2,
+          children: [],
+        },
+      ],
     },
   ]);
 });

@@ -1,4 +1,4 @@
-import { CategoryOTreeNode, CategoryTreeNode  } from '../types/category';
+import { CategoryOTreeNode, CategoryTreeNode } from '../types/category';
 
 import { OrderedTreeBuilder } from './baseTreeBuilder';
 
@@ -72,7 +72,7 @@ export class CategoryOTreeBuilder extends OrderedTreeBuilder<
    */
   public buildTree(categories: CategoryTreeNode[]): CategoryOTreeNode[] {
     if (!categories.length) return [];
-    
+
     const tree = super.buildTree(categories);
     const homeCategories = this.collectHomeCategories(categories);
     this.setHomeFlags(tree, homeCategories);
@@ -94,7 +94,10 @@ export class CategoryOTreeBuilder extends OrderedTreeBuilder<
       const builder = new CategoryOTreeBuilder();
       return builder.buildTree(categories);
     } catch (error) {
-      console.error('Error building category tree:', error instanceof Error ? error.message : 'Unknown error');
+      console.error(
+        'Error building category tree:',
+        error instanceof Error ? error.message : 'Unknown error'
+      );
       return [];
     }
   }
