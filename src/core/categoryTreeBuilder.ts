@@ -13,7 +13,7 @@ export class CategoryTreeBuilder {
   static async fromQuery(categoriesQuery: CategoriesQuery): Promise<CategoryTreeNode[]> {
     try {
       const { data: categories } = await categoriesQuery();
-      if (!categories?.length) return [];
+      if (!categories.length) return [];
 
       const builder = new CategoryTreeBuilder();
       return builder.buildTree(categories);

@@ -156,3 +156,12 @@ test('buildTree returns empty array when given empty input', (t) => {
   const result = builder.buildTree([]);
   t.deepEqual(result, [], 'Should return empty array when given empty input');
 });
+
+test('Handles non-Error objects in catch block', async (t) => {
+  const getCategories = async () => {
+    throw 'String error'; // This will trigger the 'Unknown error' branch
+  };
+
+  const result = await CategoryTreeBuilder.fromQuery(getCategories);
+  t.deepEqual(result, []);
+});
