@@ -1,67 +1,61 @@
-# Ordered Tree Builder
+# Category Tree Builder
 
-A TypeScript library for building and transforming hierarchical tree structures with ordering capabilities.
+Solidne i rozszerzalne rozwiązanie do budowania uporządkowanych drzew kategorii z konfigurowalnymi regułami transformacji.
 
-## Overview
+## Kluczowe Ulepszenia
 
-The library provides two main components:
+- **Separacja Odpowiedzialności**: Rozdziela ogólną logikę budowania drzewa (`OrderedTreeBuilder`) od implementacji specyficznej dla kategorii (`CategoryOTreeBuilder`)
+- **Bezpieczeństwo Typów**: Wykorzystuje TypeScript generics dla lepszego wnioskowania typów i sprawdzania podczas kompilacji
+- **Konfigurowalność**: Umożliwia dostosowanie reguł sortowania i transformacji poprzez wstrzykiwanie zależności
+- **Łatwość Utrzymania**: Redukuje duplikację kodu i poprawia czytelność poprzez przejrzystą hierarchię klas
+- **Obsługa Błędów**: Implementuje właściwą obsługę błędów i przypadków brzegowych
+- **Naprawione Błędy**: Koryguje problem z sortowaniem kategorii poprzez prawidłowe parsowanie prefiksów numerycznych z tytułów
 
-1. `OrderedTreeBuilder`: A base class for building ordered tree structures with customizable transformation logic.
-2. `CategoryOTreeBuilder`: A specialized implementation for category trees with home page visibility features.
+## Architektura
 
-## Usage Examples
+Rozwiązanie składa się z dwóch głównych komponentów:
 
-### Basic Tree Building
+1. **BaseTreeBuilder**: Generyczny builder drzewa, który obsługuje podstawową logikę:
+   - Transformację węzłów drzewa
+   - Rekurencyjne przetwarzanie dzieci
+   - Sortowanie węzłów
 
-```typescript
-// Define your node types
-type MyNode = TreeNode<{ name: string }>;
-type MyOrderedNode = OrderedTreeNode<{ name: string }>;
+2. **CategoryTreeBuilder**: Specjalistyczna implementacja, która dodaje:
+   - Reguły sortowania specyficzne dla kategorii
+   - Flagi widoczności na stronie głównej
+   - Integrację ze źródłem danych
 
-// Create a basic builder
-const builder = new OrderedTreeBuilder<MyNode, MyOrderedNode>();
+## Użycie
 
-// Build a tree
-const result = builder.buildTree([
-  { 
-    id: 1, 
-    name: 'Root',
-    children: [
-      { id: 2, name: 'Child' }
-    ]
-  }
-]);
-```
-
-### Category Tree with Custom Ordering
+Aby użyć buildera drzewa kategorii:
 
 ```typescript
-const categoryBuilder = new CategoryOTreeBuilder();
+// Używając statycznej metody fabrykującej
+const tree = await CategoryOTreeBuilder.fromQuery(getCategories);
 
-// Build a category tree with title-based ordering
-const categories = [
-  { id: 1, name: 'First', Title: '1#', MetaTagDescription: 'img1' },
-  { id: 2, name: 'Second', Title: '2', MetaTagDescription: 'img2' }
-];
-
-const orderedTree = categoryBuilder.buildTree(categories);
-// Result: Categories ordered by Title number
-// '#' in Title marks categories for home page display
+// Lub używając buildera bezpośrednio
+const builder = new CategoryOTreeBuilder();
+const tree = builder.buildTree(categories);
 ```
-## Features
 
-- Generic type support for flexible node structures
-- Customizable ordering logic
-- Preserves additional node properties during transformation
-- Built-in support for category-specific features (home page visibility, image handling)
+## Testowanie
 
-## Running Tests
+Rozwiązanie można przetestować używając dostarczonych danych wejściowych:
 
 ```bash
 npm run test
 ```
 
-Note: It is expected to see two error logs in the console when running the tests. It is part of the test suite.
+Testy weryfikują zarówno funkcjonalność sortowania, jak i reguły widoczności na stronie głównej.
+
+## Rozszerzanie
+
+Rozwiązanie można rozszerzyć poprzez:
+
+1. Tworzenie nowych wyspecjalizowanych builderów dziedziczących po `OrderedTreeBuilder`
+2. Dostosowywanie `OrderedTreeBuilderConfig` dla różnych reguł transformacji
+3. Implementację nowych integracji ze źródłami danych poprzez metodę statyczną `fromQuery`
+
 
 
 _____ 
